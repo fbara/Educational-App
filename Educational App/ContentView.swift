@@ -18,7 +18,15 @@ struct ContentView: View {
                 ScrollView(.vertical) {
                     TopView()
                     
+                    if isAdShowing {
+                        TopCardView(isAdShowing: $isAdShowing)
+                    } else {
+                        EmptyView()
+                    }
+                    
                 }
+            .navigationBarTitle("")
+            .navigationBarHidden(true)
             }.tabItem {
                 Image(systemName: "house.fill")
                 
@@ -52,26 +60,24 @@ struct SearchView: View {
     @State private var search = ""
     
     var body: some View {
-        ForEach(/*@START_MENU_TOKEN@*/0 ..< 5/*@END_MENU_TOKEN@*/) { item in
-            ZStack {
-                Rectangle()
-                    .foregroundColor(Color(.systemGray5))
+        ZStack {
+            Rectangle()
+                .foregroundColor(Color(.systemGray5))
+                .cornerRadius(12)
+                .frame(height: 50)
+            
+            
+            HStack {
+                TextField("Search", text: self.$search)
+                
+                Image(systemName: "magnifyingglass")
+                    .font(Font.system(size: 22).weight(.bold))
+                    .padding()
+                    .foregroundColor(.white)
+                    .background(Color(.systemIndigo))
                     .cornerRadius(12)
-                    .frame(height: 60)
-                
-                
-                HStack {
-                    ExtractedView()
-                    
-                    Image(systemName: "magnifyingglass")
-                        .font(Font.system(size: 22).weight(.bold))
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color(.systemIndigo))
-                        .cornerRadius(12)
-                }
-                .padding(.horizontal)
             }
+            .padding(.horizontal)
         }
     }
 }
@@ -81,9 +87,10 @@ struct TopButtonView: View {
         Button(action: buttonAction) {
             Image(systemName: "slider.horizontal.3")
                 .font(Font.system(size: 22).weight(.bold))
-                .frame(width: 60, height: 60)
+                .frame(width: 40, height: 40)
                 .foregroundColor(Color(.label))
                 .background(Color(.systemGray5))
+            .cornerRadius(12)
         }
     }
     
@@ -92,8 +99,100 @@ struct TopButtonView: View {
     }
 }
 
-struct ExtractedView: View {
+struct TopCardView: View {
+    @Binding var isAdShowing: Bool
+    
     var body: some View {
-        TextField("Search", text: $search)
+        HStack {
+            ZStack(alignment: .leading) {
+                Image("learn")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .offset(x: 160, y: 40)
+                
+                VStack(alignment: .leading) {
+                    CardHeaderLabelView(label: "Upgrade")
+                    CardHeaderLabelView(label: "Your Profile")
+                    CardBodyLabelView(label: "Education is your passport to the")
+                    CardBodyLabelView(label: "future, so learn mor & more.")
+                    
+                    Spacer()
+                    CardButtonView()
+                }
+            }
+            
+            Spacer()
+            XButtonView(isAdShowing: $isAdShowing)
+            
+        }
+        .padding()
+        .frame(width: UIScreen.main.bounds.width - 32, height: 220, alignment: .center)
+        .background(CardGradientView())
+        .cornerRadius(18)
+        .padding(.vertical)
+    }
+}
+
+struct CardHeaderLabelView: View {
+    let label: String
+    
+    var body: some View {
+        Text(label)
+            .font(.title)
+            .fontWeight(.heavy)
+            .foregroundColor(Color.white)
+    }
+}
+
+struct CardBodyLabelView: View {
+    let label: String
+    
+    var body: some View {
+        Text(label)
+            .foregroundColor(Color(.systemGray5))
+    }
+}
+
+struct CardGradientView: View {
+    var body: some View {
+        LinearGradient(gradient: Gradient(colors: [Color(.systemIndigo), Color.purple]), startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+}
+
+struct XButtonView: View {
+    @Binding var isAdShowing: Bool
+    
+    var body: some View {
+        VStack {
+            Button(action: action) {
+                Image(systemName: "xmark")
+                    .font(Font.body.weight(.medium))
+                    .foregroundColor(.white)
+                    .padding(6)
+                    .background(Color.white.opacity(0.4))
+                    .clipShape(Circle())
+            }
+            
+            Spacer()
+        }
+    }
+    
+    func action() {
+        isAdShowing.toggle()
+    }
+}
+
+struct CardButtonView: View {
+    var body: some View {
+        Button(action: {
+            print("Tap!!")
+        }) {
+            Text("Go Pro")
+                .accentColor(.white)
+                .frame(width: 100, height: 40)
+                .background(Color.orange)
+                .clipShape(Capsule())
+                .padding(.vertical)
+        }
     }
 }
