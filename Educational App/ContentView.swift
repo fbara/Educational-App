@@ -24,6 +24,9 @@ struct ContentView: View {
                         EmptyView()
                     }
                     
+                    CoursesScrollView()
+                    RecommendedScrollView()
+                    
                 }
             .navigationBarTitle("")
             .navigationBarHidden(true)
@@ -193,6 +196,144 @@ struct CardButtonView: View {
                 .background(Color.orange)
                 .clipShape(Capsule())
                 .padding(.vertical)
+        }
+    }
+}
+
+struct HeaderView: View {
+    let label: String
+    
+    var body: some View {
+        HStack {
+            Text(label )
+                .font(.title)
+                .fontWeight(.heavy)
+            
+            
+            Spacer()
+        }
+        .padding(.leading)
+    }
+}
+
+struct Courses: Identifiable {
+    var id = UUID()
+    let image: String
+    let category: String
+    let label: String
+    let numberOfLessons: String
+    let percentageWatched: CGFloat
+}
+
+struct CoursesScrollView: View {
+    var body: some View {
+        VStack {
+            HeaderView(label: "Running Courses")
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(0 ..< 5) { item in
+                        CourseView()
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct CourseView: View {
+    var courses = [
+           Courses(id: UUID(), image: "learn", category: "Aarts & Crafts", label: "How to make Paper Crafts", numberOfLessons: "3 of 9", percentageWatched: 50),
+           Courses(id: UUID(), image: "learn", category: "Robotics", label: "How to make Robots!", numberOfLessons: "6 of 20", percentageWatched: 12),
+           Courses(id: UUID(), image: "learn", category: "Cooking", label: "You too can make Pasta", numberOfLessons: "2 of 5", percentageWatched: 75)
+       ]
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            ForEach(courses, id: \.id) { course in
+                NavigationLink(destination: Text("Coming Soon")) {
+                    HStack(alignment: .top) {
+                        Image(course.image)
+                            .renderingMode(.original)
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 72, height: 72)
+                            .background(CardGradientView())
+                            .clipShape(Rectangle())
+                            .cornerRadius(8)
+                        
+                        VStack(alignment: .leading) {
+                            Text(course.category)
+                                .foregroundColor(.purple)
+                                .padding(.bottom, 4)
+                            
+                            Text(course.label)
+                                .font(.headline)
+                                .fontWeight(.medium)
+                                .foregroundColor(Color(.label))
+                                .padding(.bottom, 4)
+                            
+                            HStack {
+                                Text(course.numberOfLessons)
+                                    .foregroundColor(.secondary)
+                                    .padding(.bottom, 4)
+                                
+                                Spacer()
+                                
+                                ZStack(alignment: .leading) {
+                                    Rectangle()
+                                        .frame(width: 100, height: 8)
+                                        .foregroundColor(Color(.systemGray4))
+                                    
+                                    Rectangle()
+                                        .frame(width: course.percentageWatched, height: 8)
+                                        .foregroundColor(.orange)
+                                }
+                                .clipShape(Capsule())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+
+struct RecommendedScrollView: View {
+    var body: some View {
+        VStack {
+            HeaderView(label: "Recommended Courses")
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                    ForEach(0 ..< 5) { item in
+                        ZStack(alignment: .topLeading) {
+                            Image("brush")
+                                .resizable()
+                                .frame(width: UIScreen.main.bounds.width - 100, height: 200)
+                            
+                            Rectangle()
+                                .foregroundColor(.black)
+                                .opacity(0.4)
+                            
+                            Button(action: {
+                                //
+                            }) {
+                                Text("Recommended")
+                                    .bold()
+                                    .foregroundColor(Color(.label))
+                                    .padding()
+                                    .background(Color.white)
+                                    .clipShape(Capsule())
+                                    .padding()
+                            }
+                        }
+                        .cornerRadius(12)
+                    }
+                    .padding(.leading)
+                }
+            }
         }
     }
 }
